@@ -12,7 +12,55 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 		<servlet-name>JCConf_GAE_Workshop</servlet-name>
 		<url-pattern>/jcconf_gae_workshop</url-pattern>
 	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>DatastoreExample</servlet-name>
+		<servlet-class>com.susufufu.workshop.jcconf2015.DatastoreExample</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>DatastoreExample</servlet-name>
+		<url-pattern>/DatastoreExample</url-pattern>
+	</servlet-mapping>
+	
+	
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>
 	</welcome-file-list>
+	
+	
+	
+	<!-- direct /appstats requests to built-in appstats tool -->
+	<servlet>
+	  <servlet-name>appstats</servlet-name>
+	  <servlet-class>com.google.appengine.tools.appstats.AppstatsServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+	  <servlet-name>appstats</servlet-name> 
+	  <url-pattern>/appstats/*</url-pattern>
+	</servlet-mapping>
+	
+	<!-- appstats to record statistics/metrics for each request -->
+	<filter>
+	  <filter-name>appstats</filter-name>
+	  <filter-class>com.google.appengine.tools.appstats.AppstatsFilter</filter-class>
+	 </filter>
+	<filter-mapping>
+	  <filter-name>appstats</filter-name>  
+	  <url-pattern>/*</url-pattern>
+	</filter-mapping>
+	
+	<!-- Security setting -->
+	<security-constraint>
+        <web-resource-collection>
+            <web-resource-name>admin</web-resource-name>
+            <url-pattern>/admin/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>admin</role-name>
+        </auth-constraint>
+    </security-constraint>
+
+
+	
+		
 </web-app>
