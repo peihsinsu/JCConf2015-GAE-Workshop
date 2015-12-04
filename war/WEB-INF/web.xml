@@ -22,6 +22,24 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 		<url-pattern>/DatastoreExample</url-pattern>
 	</servlet-mapping>
 	
+	<servlet>
+		<servlet-name>DatastoreExample2</servlet-name>
+		<servlet-class>com.susufufu.workshop.jcconf2015.DatastoreExample2</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>DatastoreExample2</servlet-name>
+		<url-pattern>/DatastoreExample2</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>Lab1</servlet-name>
+		<servlet-class>com.susufufu.workshop.jcconf2015.Lab1Servlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Lab1</servlet-name>
+		<url-pattern>/lab1</url-pattern>
+	</servlet-mapping>
+	
 	
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>

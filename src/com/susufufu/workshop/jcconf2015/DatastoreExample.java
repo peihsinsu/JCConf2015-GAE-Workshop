@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.logging.Level;
 
 import javax.servlet.http.HttpServlet;
@@ -13,7 +14,9 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Transaction;
@@ -35,8 +38,13 @@ public class DatastoreExample extends HttpServlet {
 		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 		Entity employee = null;
 		Key empKey = null;
+		
+		//Begin transaction
 		Transaction txn = datastore.beginTransaction();
+		
+		//Add data
 		try {
+			//employee = new Entity("Employee");
 			employee = new Entity("Employee", "simonsu.mail@gmail.com");
 			employee.setProperty("name", "simonsu");
 			employee.setProperty("hireDate", new Date());
@@ -50,28 +58,41 @@ public class DatastoreExample extends HttpServlet {
 				txn.rollback();
 		}
 		
-		long t1 = new Date().getTime();
+		//Get data from specified key
+		Key k = KeyFactory.createKey("Employee", "simonsu.mail@gmail.com");
+		try {
+			Entity user = datastore.get(k);
+			Map data = user.getProperties();
+			out.println("2. get datastore data..." + data.toString() );
+		} catch (EntityNotFoundException e) {
+			e.printStackTrace();
+		}
+		
+		//Query data from datastore with equal query
 		Query query = new Query("Employee");
 		Query.Filter nameFilter = 
 				new Query.FilterPredicate("name", Query.FilterOperator.EQUAL, "simonsu");
 		query.setFilter(nameFilter); 
 		
+		//Sorting
+		query.addSort("hireDate");
+		
 		PreparedQuery results = datastore.prepare(query);
 		Iterator<Entity> iter = results.asIterator();
 		while(iter.hasNext()) {
 			Entity ent = iter.next();
-			out.println("2. query and got:" + ent.getProperties());
+			out.println("3. query and got:" + ent.getProperties());
 		}
-		long t2 = new Date().getTime();
-		long i1 = t2 - t1;
-		out.println("3. cost of query datastore=" + i1);
 		
+		//Memcache example
 		MemcacheService cache = MemcacheServiceFactory.getMemcacheService();
 		cache.setErrorHandler(
 		    ErrorHandlers.getConsistentLogAndContinue(Level.INFO));
 		cache.put("simonsu.mail@gmail.com", employee);
-		long i2 = new Date().getTime() - t2;
-		out.println("4. cost of using memcache=" + i2);
+		out.println("5. put to memcache done...");
+		
+		Entity fromMemcache = (Entity) cache.get("simonsu.mail@gmail.com");
+		out.println("6. get from memcache: " + fromMemcache.getProperties());
 		
 		
 	}
