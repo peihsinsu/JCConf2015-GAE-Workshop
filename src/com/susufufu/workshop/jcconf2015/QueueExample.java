@@ -20,10 +20,11 @@ public class QueueExample extends HttpServlet {
 			throws IOException {
 
 		Queue queue = QueueFactory.getDefaultQueue();
-		//QueueFactory.getQueue("Qname");
-		//Queue pullQueue = QueueFactory.getQueue("ProcessQueue");
+		
+		//Using named queue
+		Queue processQueue = QueueFactory.getQueue("ProcessQueue");
 
-		TaskOptions pushTask = TaskOptions.Builder.withUrl("/queue")
+		TaskOptions pushTask = TaskOptions.Builder.withUrl("/QueueExample")
 				.param("name", "simonsu");
 
 		TaskOptions pullTask = TaskOptions.Builder
@@ -31,7 +32,7 @@ public class QueueExample extends HttpServlet {
 				.payload("this is payload");
 
 		queue.add(pushTask);
-		queue.add(pullTask);
+		processQueue.add(pullTask);
 
 		resp.setContentType("text/plain");
 		resp.getWriter().println("Create task done...");

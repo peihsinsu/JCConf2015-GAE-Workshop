@@ -1,0 +1,6 @@
+<queue-entries>
+  <queue>
+    <name>ProcessQueue</name>
+    <mode>pull</mode>
+  </queue> 
+</queue-entries>
